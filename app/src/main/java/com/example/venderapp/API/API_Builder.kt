@@ -6,6 +6,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 
+
 interface API_Builder {
 
     //    Create User
@@ -23,6 +24,9 @@ interface API_Builder {
 //    @GET("/getAllUsers")
 //    suspend fun getAllUsers()
 
+
+    @GET("/getAllProducts")
+    suspend fun getAllProducts(): ArrayList<ProductDataClassItem>
 
 
 

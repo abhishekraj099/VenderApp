@@ -4,33 +4,36 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.venderapp.Screens.SignUpPage.SignUpScreenViewModel
+
 import com.example.venderapp.navigation.NavGraph
+import com.example.venderapp.pref.DataStoreManager
 import com.example.venderapp.ui.theme.VenderAppTheme
+import com.example.venderapp.viewmodel.VendorViewModel
+import com.example.venderapp.viewmodel.VendorViewModelFactory
 
 
 class MainActivity : ComponentActivity() {
+    private val dataStoreManager by lazy { DataStoreManager(applicationContext) }
+    private val vendorViewModel: VendorViewModel by viewModels {
+        VendorViewModelFactory(dataStoreManager)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val signUpScreenViewModel: SignUpScreenViewModel by viewModels()
             val navHostController = rememberNavController()
             VenderAppTheme {
                 Scaffold {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(it)
-                    ) {
+                    Surface(modifier = Modifier.padding(it)) {
                         NavGraph(
-                            signUpScreenViewModel = signUpScreenViewModel,
+                            vendorViewModel = vendorViewModel,
                             navHostController = navHostController
                         )
                     }

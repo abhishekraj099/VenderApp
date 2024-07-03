@@ -5,11 +5,15 @@ import kotlinx.serialization.Serializable
 sealed class Routes {
 
     @Serializable
-    object Home
+    object HomeScreen
+
     @Serializable
     object SignUpScreen
+
     @Serializable
     object SignInScreen
+
+
 
 
 }

@@ -1,6 +1,5 @@
-package com.example.venderapp.Screens.SignUpPage
+package com.example.venderapp.screen
 
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,13 +19,11 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,14 +31,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.venderapp.navigation.Routes
+import com.example.venderapp.viewmodel.State
+import com.example.venderapp.viewmodel.VendorViewModel
 
 @Composable
-fun SignUpScreen(viewModel: SignUpScreenViewModel, navHostController: NavHostController) {
+fun SignUpScreen(vendorViewModel: VendorViewModel, navHostController: NavHostController) {
     val userName = remember { mutableStateOf("") }
     val userNumber = remember { mutableStateOf("") }
     val userEmail = remember { mutableStateOf("") }
@@ -50,7 +47,7 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel, navHostController: NavHostCon
     val userPassword = remember { mutableStateOf("") }
 
 
-    when (viewModel.state.value) {
+    when (vendorViewModel.state.value) {
         State.DEFAULT.name -> {
             Column {
                 Column(Modifier.padding(16.dp, top = 30.dp)) {
@@ -197,7 +194,8 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel, navHostController: NavHostCon
 
                     Button(
                         onClick = {
-                            viewModel.createUser(
+                            vendorViewModel.state.value = State.LOADING.name
+                            vendorViewModel.createUser(
                                 name = userName.value,
                                 password = userPassword.value,
                                 email = userEmail.value,
@@ -228,8 +226,11 @@ fun SignUpScreen(viewModel: SignUpScreenViewModel, navHostController: NavHostCon
         }
 
         State.FAILED.name -> Text(text = "Try Again")
-        State.SUCCESS.name -> navHostController.navigate(Routes.Home)
+        State.SUCCESS.name -> {
+            HomeScreen(vendorViewModel = vendorViewModel, navHostController = navHostController)
+        }
     }
 
 
 }
+

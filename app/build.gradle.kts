@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
@@ -71,9 +72,12 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 // navigation compose
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.kotlinx.serialization.json)
+  
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+    implementation("androidx.navigation:navigation-compose:2.8.0-beta01")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation(libs.androidx.material.icons.extended.android)
+    implementation ("androidx.datastore:datastore-preferences:1.1.1")
 }

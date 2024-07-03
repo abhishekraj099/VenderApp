@@ -1,20 +1,38 @@
-package com.example.venderapp.Screens.SignUpPage
+package com.example.venderapp.viewmodel
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.venderapp.API.ProductDataClassItem
 import com.example.venderapp.API.RetrofitInstance
+import com.example.venderapp.pref.DataStoreManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SignUpScreenViewModel : ViewModel() {
+class VendorViewModel(private val dataStoreManager: DataStoreManager) : ViewModel() {
+
     var state = mutableStateOf("")
+    var products = mutableStateOf<List<ProductDataClassItem?>>(emptyList())
+    private val _userId = MutableStateFlow(0)
+    val userId = _userId.asStateFlow()
 
     init {
         state.value = State.DEFAULT.name
+        viewModelScope.launch {
+            products.value = RetrofitInstance.api.getAllProducts()
+            dataStoreManager.userPref.getPref().collect {
+                _userId.value = it
+            }
+        }
     }
 
-    fun setDefault() {
-        state.value = State.DEFAULT.name
+    fun savePref(id: Int){
+        viewModelScope.launch {
+            dataStoreManager.userPref.setPref(id)
+        }
     }
+
 
     fun createUser(
         name: String,
@@ -36,6 +54,7 @@ class SignUpScreenViewModel : ViewModel() {
             )
             if (result.isSuccessful) {
                 if (result.body()?.status == 200) {
+                    savePref(151)
                     state.value = State.SUCCESS.name
                 } else {
                     state.value = State.FAILED.name
@@ -45,6 +64,7 @@ class SignUpScreenViewModel : ViewModel() {
             }
         }
     }
+
 }
 
 sealed class State(var name: String) {
